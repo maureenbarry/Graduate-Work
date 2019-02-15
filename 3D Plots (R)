@@ -1,0 +1,56 @@
+# Import data
+df = read.table("C:/Users/MB048710/Documents/KSU/STAT 730/Data/T1-7.DAT")
+df
+
+# Name Columns
+colnames(df) = c("symptoms","activity","sleep","food","appetite","skin")
+df
+
+# Histogram of Symptoms
+hist(df[,1], nclass = 10, col = 'red', xlab = "Number of Symptoms", main = "Histogram of Symptoms")
+
+# Histogram of Activity
+hist(df[,2], nclass = 10, col = 'orange', xlab = "Amount of Activity", main = "Histogram of Activity")
+
+# Histogram of Sleep
+hist(df[,3], nclass = 10, col = 'yellow', xlab = "Amount of Sleep", main = "Histogram of Sleep")
+
+# Histogram of Food
+hist(df[,4], nclass = 10, col = 'green', xlab = "Amount of Food Consumed", main = "Histogram of Food Consumption")
+
+
+#Histogram of Appetite
+hist(df[,5], nclass = 10, col = 'blue', xlab = "Appetite (Scale 1-5)", main = "Histogram of Appetite")
+
+
+#Histogram of Skin
+hist(df[,6], nclass = 10, col = 'purple', xlab = "Skin Reaction (Scale 0-3)", main = "Histogram of Skin Reaction")
+
+#Create a scatter plot and box plot
+library(car)
+spm(df, diagonal="boxplot", smooth=F, reg.line=F, cex.axis=1.5, cex.labels=1.5, pch=20)
+
+# Construct the xbar, S, and R Arrays
+apply(df,2,mean)
+var(df)
+cor(df)
+
+# View data in three dimensions using variables skin, activity, and food consumed. Rotate coordinate axes in various directions
+#Check for outliers
+library(scatterplot3d)
+z = df[,4]
+y = df[,2]
+x = df[,6]
+
+# Rotate the plots
+scatterplot3d(x, y, z, highlight.3d = TRUE, col.axis = "blue", col.grid = "lightblue", main = "Plot1", pch = 20, type = "h", xlab = "Skin", ylab = "Activity", zlab = "Food") #Harder to see distribution
+scatterplot3d(x, z, y, highlight.3d = TRUE, col.axis = "blue", col.grid = "lightblue", main = "Plot2", pch = 20, type = "h", xlab = "Skin", ylab = "Activity", zlab = "Food") #Clear Trends
+scatterplot3d(y, x, z, highlight.3d = TRUE, col.axis = "blue", col.grid = "lightblue", main = "Plot3", pch = 20, type = "h", xlab = "Skin", ylab = "Activity", zlab = "Food") #Somewhat Legible
+scatterplot3d(y, z, x, highlight.3d = TRUE, col.axis = "blue", col.grid = "lightblue", main = "Plot4", pch = 20, type = "h", xlab = "Skin", ylab = "Activity", zlab = "Food") #Not Legible
+scatterplot3d(z, x, y, highlight.3d = TRUE, col.axis = "blue", col.grid = "lightblue", main = "Plot5", pch = 20, type = "h", xlab = "Skin", ylab = "Activity", zlab = "Food") #Somewhat Legible
+scatterplot3d(z, y, x, highlight.3d = TRUE, col.axis = "blue", col.grid = "lightblue", main = "Plot6", pch = 20, type = "h", xlab = "Skin", ylab = "Activity", zlab = "Food") #Not Legible
+
+# Plot COR
+library(corrplot)
+m = cor(df)
+corrplot(m, method = "circle")
