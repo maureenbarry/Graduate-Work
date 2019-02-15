@@ -1,0 +1,195 @@
+# Import data
+df = read.table("C:/Users/MB048710/Documents/KSU/STAT 730/Data/T4-6.DAT")
+df
+
+# Name Columns
+colnames(df) = c("indep","supp","benev","conform","leader","gender", "socio")
+df
+
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$indep, main = "Normal Q-Q Plot for Independence") -> qqi
+qqline(df$indep, col = 2, main = "Normal Q-Q Plot for Independence")
+cor(qqi$x,qqi$y) # Reject
+
+qqnorm(df$supp, main = "Normal Q-Q Plot for Support") -> qqs
+qqline(df$supp, col = 2, main = "Normal Q-Q Plot for Support")
+cor(qqs$x,qqs$y) # Reject
+
+qqnorm(df$benev, main = "Normal Q-Q Plot for Benevolence") -> qqb
+qqline(df$benev, col = 2, main = "Normal Q-Q Plot for Benevolence")
+cor(qqb$x,qqb$y) # Reject
+
+
+qqnorm(df$conform, main = "Normal Q-Q Plot for Conformity") -> qqc
+qqline(df$conform, col = 2, main = "Normal Q-Q Plot for Conformity")
+cor(qqc$x,qqc$y) # Do not reject
+
+qqnorm(df$leader, main = "Normal Q-Q Plot for Leadership") -> qql 
+qqline(df$leader, col = 2, main = "Normal Q-Q Plot for Leadership")
+cor(qql$x,qql$y) # Reject
+
+########################################################################################################
+
+setwd("C:/Users/MB048710/Documents/KSU/STAT 730/Data")
+T46=matrix(scan("T4-6.DAT"), ncol=7,byrow=T)
+T46[,1:5]
+pairs(T46[,1:5])
+
+# Chi-square plot
+n=nrow(T46)
+Xbar=colMeans(T46[,1:5])
+
+S=var(T46[,1:5])
+
+invS=solve(S)
+
+D=rep(0,n)
+
+for (i in 1:n){D[i]=t(T46[i,1:5]-Xbar)%*%invS%*%(T46[i,1:5]-Xbar)}
+
+#pdf("MultiNormalExample.pdf")
+plot(qchisq((seq(1:n)-0.5)/n,8),sort(D),pch=19,main="Chi-square plot",xlab="Chi-square quantiles",ylab="generalized distances",cex.axis=1.5, cex.lab=1.5, cex.main=1.5)
+abline(0,1,lty=1,cex=1.5,col="red")
+#dev.off()
+# Abline is not fit to the data -> non-normal
+
+# Find Outliers
+sort(D) #sorts from low to high
+order(D) #labes which observation is associated with above
+
+#Compare
+T46[c(104,60),1:5]
+#v
+round(Xbar,2)
+
+# Transformation to Normality
+xlambda=function(x,lamb)  #box-cox transformation Eq.4-34
+{ 
+  if (lamb != 0) {(x^(lamb)-1)/lamb} 
+  else {log(x)} 
+}
+
+llambda=function(x,lamb)  #l(lambda) Eq. 4-40
+{ 
+  n=length(x); m=length(lamb); ll=rep(0,m); 
+  
+  for (i in 1:m) 
+  { ll[i]=(lamb[i]-1)*n*mean(log(x)) - n/2*log( (n-1)/n*var(xlambda(x,lamb[i])) ) }
+  
+  ll
+}
+
+nlf=function(la,x)  # negative l function : -l(lambda)
+{ 
+  n=length(x)
+  nl=-((la-1)*n*mean(log(x)) - n/2*log( (n-1)/n*var(xlambda(x,la)) ))
+  
+  nl
+}
+
+library(MASS)
+source("functions.R")
+T46 = T46[,1:5]
+T46
+
+par(mfrow=c(1,2))
+
+# Independence
+boxcoxplot(T46[,1])
+boxcoxestimate(T46[,1:2])
+
+#comapre with  
+
+lambda=seq(-2,2,0.2)
+
+plot(lambda,llambda(T46[,1],lambda))
+
+
+maxlambda<-optimize(f=nlf, interval=c(-2,2),x=T46[,1]) 
+maxlambda
+# Independence = 0.5237694
+
+# Support
+boxcoxplot(T46[,2])
+boxcoxestimate(T46[,1:2])
+
+#comapre with  
+
+lambda=seq(-2,2,0.2)
+
+plot(lambda,llambda(T46[,2],lambda))
+
+
+maxlambda<-optimize(f=nlf, interval=c(-2,2),x=T46[,2]) 
+maxlambda
+# Support = 1.396259
+
+# Benevolence
+boxcoxplot(T46[,3])
+boxcoxestimate(T46[,1:2])
+
+#comapre with  
+
+lambda=seq(-2,2,0.2)
+
+plot(lambda,llambda(T46[,3],lambda))
+
+
+maxlambda<-optimize(f=nlf, interval=c(-2,2),x=T46[,3]) 
+maxlambda
+# Benevolence = 1.261873
+
+# Leadership
+boxcoxplot(T46[,5])
+boxcoxestimate(T46[,1:2])
+
+#comapre with  
+
+lambda=seq(-2,2,0.2)
+
+plot(lambda,llambda(T46[,5],lambda))
+
+
+maxlambda<-optimize(f=nlf, interval=c(-2,2),x=T46[,5]) 
+maxlambda
+# Leadership = 0.381566
+
+# Recheck Independence
+qqnorm(T46[,1],main="Independence",sub="\nQ-Q plot with line")
+qqline(T46[,1],col="red")
+
+T46_1trans=xlambda(T46[,1],0.5237694)
+
+qqnorm(T46_1trans,main="Transformed Independence",sub="\nQ-Q plot with line")
+
+qqline(T46_1trans,col="blue")
+
+# Recheck Support
+qqnorm(T46[,2],main="Support",sub="\nQ-Q plot with line")
+qqline(T46[,2],col="red")
+
+T46_2trans=xlambda(T46[,2],1.396259)
+
+qqnorm(T46_2trans,main="Transformed Support",sub="\nQ-Q plot with line")
+
+qqline(T46_2trans,col="blue")
+
+# Recheck Benevolence
+qqnorm(T46[,3],main="Benevolence",sub="\nQ-Q plot with line")
+qqline(T46[,3],col="red")
+
+T46_3trans=xlambda(T46[,3],1.261873)
+
+qqnorm(T46_3trans,main="Transformed Benevolence",sub="\nQ-Q plot with line")
+
+qqline(T46_3trans,col="blue")
+
+# Recheck Leadership
+qqnorm(T46[,5],main="Leadership",sub="\nQ-Q plot with line")
+qqline(T46[,5],col="red")
+
+T46_5trans=xlambda(T46[,5],0.381566)
+
+qqnorm(T46_5trans,main="Transformed Leadership",sub="\nQ-Q plot with line")
+
+qqline(T46_5trans,col="blue")
