@@ -1,0 +1,51 @@
+# Import data
+df = read.table("C:/Users/MB048710/Documents/KSU/STAT 730/Data/T1-10.DAT")
+df
+
+# Name Columns
+colnames(df) = c("Breed","SalePr","YrHgt","FtFrBody","PrctFFB","Frame", "BkFat", "SaleHt", "SaleWt")
+df
+
+# Drop Breed and Sale Price
+df <- subset(df, select = -c(1, 2))
+
+# xbar
+x = apply(df,2,mean)
+x
+write.csv(x, "C:/Users/MB048710/Documents/KSU/STAT 730/Asgn2_x.csv")
+# S
+v = var(df)
+v
+write.csv(v, "C:/Users/MB048710/Documents/KSU/STAT 730/Asgn2_var.csv")
+
+# R
+c = cor(df)
+c
+write.csv(c, "C:/Users/MB048710/Documents/KSU/STAT 730/Asgn2_cor.csv")
+
+# PCA on correlation because of the different scales of the variables, so scale=T
+pca.df <- prcomp(df, scale=T)
+pca.df
+b = pca.df
+write.csv(b, "C:/Users/MB048710/Documents/KSU/STAT 730/Asgn2_pcadf.csv")
+
+# Proportion of total variance explained by each component
+s <- var(pca.df$x)
+a = pvar<-round(diag(s)/sum(diag(s)), digits=6)
+cat("proportion of variance: ", pvar, fill=T)
+a
+write.csv(a, "C:/Users/MB048710/Documents/KSU/STAT 730/Asgn2_pca.csv")
+
+# Screeplot
+screeplot(pca.df,type="lines", main = "Plot of PC by Variance")
+
+# Scatterplot
+plot(pca.df$x[,1:2])
+
+# Biplot
+biplot(pca.df,choices=1:2,scale=0)
+
+# Construct QQ on PC1
+qqnorm(pca.df$x)
+qqline(pca.df$x)
+
