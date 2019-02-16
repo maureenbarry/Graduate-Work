@@ -1,0 +1,47 @@
+Rho <- matrix(c(1,.615,-.111,-.266,.615,1,-.195,-.085,-.111,-.195,1,-.269,-.266,-.085,-.269,1),4,4)
+Rho
+
+rho11<-Rho[1:2,1:2]
+rho11
+rho12<-Rho[1:2,3:4]
+rho21<-Rho[3:4,1:2]
+rho22<-Rho[3:4,3:4]
+
+r<-eigen(rho11)
+V<-r$vectors
+Lam <-diag(r$values)
+inv.sqrt.rho11 <- solve(V%*%sqrt(Lam)%*%t(V))
+inv.sqrt.rho11
+
+inv.rho22<-solve(rho22)
+inv.rho22
+
+KeyMatrix<- inv.sqrt.rho11%*%rho12%*%inv.rho22%*%rho21%*%inv.sqrt.rho11
+KeyMatrix
+
+E1<-eigen(KeyMatrix)
+E1
+e1<-E1$vect[,1]
+
+a1 <- inv.sqrt.rho11 %*% e1
+a1
+
+# f1 propto inv.sqrt.rho22%*%rho21%*%inv.sqrt.rho11%*%e1
+# b1 = inv.sqrt.rho22 %*% f1
+# b1 propto inv.sqrt.rho22%*%inv.sqrt.rho22%*%rho21%*%a1
+
+b1 <- inv.rho22%*%rho21%*%a1 
+b1
+
+#scale b1, so that 1=Var(V1) = t(b1)%*%rho22%*%b1 
+t(b1)%*%rho22%*%b1
+b1 = (1/sqrt(0.5457))*inv.rho22%*%rho21%*%a1 
+b1
+
+#canonical correlations
+sqrt(E1$values)
+
+a1
+b1
+
+Rho
