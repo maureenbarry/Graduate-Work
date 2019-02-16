@@ -1,0 +1,16 @@
+title 'FACTOR ANALYSIS OF T46';
+* Principal component method;
+* 2 factors with varimax rotation;
+
+proc factor data=Asgn3 method=prin
+		nfactors=3 mineigen=0
+		simple corr res
+		out=scorepc score rotate=varimax outstat=facpc
+		plots=(scree initloadings loadings);
+	var VAR1-VAR5;
+	run;
+
+data scorepc;
+	set scorepc;
+	rename factor1=PC1 factor2=PC2 factor3=PC3;
+run;
