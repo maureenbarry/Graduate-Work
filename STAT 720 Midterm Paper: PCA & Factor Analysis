@@ -1,0 +1,319 @@
+###################################################################################################################################
+#####################################                  MIDTERM PROJECT              ###############################################
+###################################################################################################################################
+
+# Import data
+df = read.table("C:/Users/MB048710/Documents/KSU/STAT 730/Data/bodydata.txt")
+df
+
+# Name Columns
+colnames(df) = c("biacromial", "biiliac", "bitrochanteric", "chest_depth", "chest_diameter", "elbow_diameter", "wrist_diameter", "knee_diameter",
+                 "ankle_diameter", "shoulder_girth", "chest_girth", "waist_girth", "navel_girth", "hip_girth", "thigh_girth", "bicep_girth", 
+                 "forearm_girth", "knee_girth", "calf_max", "ankle_min", "wrist_min", "age", "weight", "height", "gender")
+df
+
+# Subsample by Wildcat ID
+WID <- 21853
+set.seed(WID)
+sample = sample(c(1:507))
+subsample = df[sample[1:350],]
+write.table(subsample, "subsample.txt")
+subsample
+df = subsample
+df
+
+############################# Exploratory Analysis #########################################
+
+par(mfrow=c(1,2))
+
+# n > 300, alpha = 0.05, critical point = 0.9953 n = 350, critical point = 0.9958
+
+# Histogram of Biacromial Diameter
+hist(df[,1], nclass = 10, col = 'red', xlab = "Biacromial Diameter", main = "Biacromial Diameter")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$biacromial, main = "Normal Q-Q Plot Biacromial Diameter") -> qqbiacromial
+qqline(df$biacromial, col = 2, main = "Normal Q-Q Plot Biacromial Diameter")
+cor(qqbiacromial$x,qqbiacromial$y)
+# Reject normality hypothesis
+mean(df$biacromial)
+
+# Histogram of Biiliac Diameter
+hist(df[,2], nclass = 10, col = 'orange', xlab = "Biiliac Diameter", main = "Biiliac Diameter")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$biiliac, main = "Normal Q-Q Plot Biiliac Diameter") -> qqbiiliac
+qqline(df$biiliac, col = 2, main = "Normal Q-Q Plot Biiliac Diameter")
+cor(qqbiiliac$x,qqbiiliac$y)
+# Reject normality hypothesis
+mean(df$biiliac)
+
+# Histogram of Bitrochanteric Diameter
+hist(df[,3], nclass = 10, col = 'yellow', xlab = "Biiliac Diameter", main = "Biiliac Diameter")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$bitrochanteric, main = "Normal Q-Q Plot Bitrochanteric Diameter") -> qqbitrochanteric
+qqline(df$bitrochanteric, col = 2, main = "Normal Q-Q Plot Bitrochanteric Diameter")
+cor(qqbitrochanteric$x,qqbitrochanteric$y)
+# Fail to reject normality hypothesis
+mean(df$bitrochanteric)
+
+# Histogram of Chest Depth
+hist(df[,4], nclass = 10, col = 'green', xlab = "Chest Depth", main = "Chest Depth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$chest_depth, main = "Normal Q-Q Plot Chest Depth") -> qqchest_depth
+qqline(df$chest_depth, col = 2, main = "Normal Q-Q Plot Chest Depth")
+cor(qqchest_depth$x,qqchest_depth$y)
+# Reject normality hypothesis
+mean(df$chest_depth)
+
+
+# Histogram of Chest Diameter
+hist(df[,5], nclass = 10, col = 'blue', xlab = "Chest Diameter", main = "Chest Diameter")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$chest_diameter, main = "Normal Q-Q Plot Chest Diameter") -> qqchest_diameter
+qqline(df$chest_diameter, col = 2, main = "Normal Q-Q Plot Chest Diameter")
+cor(qqchest_diameter$x,qqchest_diameter$y)
+# Reject normality hypothesis
+mean(df$chest_diameter)
+
+
+# Histogram of Elbow Diameter
+hist(df[,6], nclass = 10, col = 'purple', xlab = "Elbow Diameter", main = "Elbow Diameter")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$elbow_diameter, main = "Normal Q-Q Plot Elbow Diameter") -> qqelbow_diameter
+qqline(df$elbow_diameter, col = 2, main = "Normal Q-Q Plot Elbow Diameter")
+cor(qqelbow_diameter$x,qqelbow_diameter$y)
+# Reject normality hypothesis
+mean(df$elbow_diameter)
+
+
+# Histogram of Wrist Diameter
+hist(df[,7], nclass = 10, col = 'red', xlab = "Wrist Diameter", main = "Wrist Diameter")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$wrist_diameter, main = "Normal Q-Q Plot Wrist Diameter") -> qqwrist_diameter
+qqline(df$wrist_diameter, col = 2, main = "Normal Q-Q Plot Wrist Diameter")
+cor(qqwrist_diameter$x,qqwrist_diameter$y)
+# Fail to reject normality hypothesis
+mean(df$wrist_diameter)
+
+
+# Histogram of Knee Diameter
+hist(df[,8], nclass = 10, col = 'orange', xlab = "Knee Diameter", main = "Knee Diameter")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$knee_diameter, main = "Normal Q-Q Plot Knee Diameter") -> qqknee_diameter
+qqline(df$knee_diameter, col = 2, main = "Normal Q-Q Plot Knee Diameter")
+cor(qqknee_diameter$x,qqknee_diameter$y)
+# Reject normality hypothesis
+mean(df$knee_diameter)
+
+
+# Histogram of Ankle Diameter
+hist(df[,9], nclass = 10, col = 'yellow', xlab = "Ankle Diameter", main = "Ankle Diameter")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$ankle_diameter, main = "Normal Q-Q Plot Ankle Diameter") -> qqankle_diameter
+qqline(df$ankle_diameter, col = 2, main = "Normal Q-Q Plot Ankle Diameter")
+cor(qqankle_diameter$x,qqankle_diameter$y)
+# Fail to reject normality hypothesis
+mean(df$ankle_diameter)
+
+
+# Histogram of Shoulder Girth
+hist(df[,10], nclass = 10, col = 'green', xlab = "Shoulder Girth", main = "Shoulder Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$shoulder_girth, main = "Normal Q-Q Plot Shoulder Girth") -> qqshoulder_girth
+qqline(df$shoulder_girth, col = 2, main = "Normal Q-Q Plot Shoulder Girth")
+cor(qqshoulder_girth$x,qqshoulder_girth$y)
+# Reject normality hypothesis
+mean(df$shoulder_girth)
+
+
+# Histogram of Chest Girth
+hist(df[,11], nclass = 10, col = 'blue', xlab = "Chest Girth", main = "Chest Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$chest_girth, main = "Normal Q-Q Plot Chest Girth") -> qqchest_girth
+qqline(df$chest_girth, col = 2, main = "Normal Q-Q Plot Chest Girth")
+cor(qqchest_girth$x,qqchest_girth$y)
+# Reject normality hypothesis
+mean(df$chest_girth)
+
+
+# Histogram of Waist Girth
+hist(df[,12], nclass = 10, col = 'purple', xlab = "Waist Girth", main = "Waist Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$waist_girth, main = "Normal Q-Q Plot Waist Girth") -> qqwaist_girth
+qqline(df$waist_girth, col = 2, main = "Normal Q-Q Plot Waist Girth")
+cor(qqwaist_girth$x,qqwaist_girth$y)
+# Reject normality hypothesis
+mean(df$waist_girth)
+
+
+# Histogram of Navel Girth
+hist(df[,13], nclass = 10, col = 'red', xlab = "Navel Girth", main = "Navel Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$navel_girth, main = "Normal Q-Q Plot Navel Girth") -> qqnavel_girth
+qqline(df$navel_girth, col = 2, main = "Normal Q-Q Plot Navel Girth")
+cor(qqnavel_girth$x,qqnavel_girth$y)
+# Reject normality hypothesis
+mean(df$navel_girth)
+
+
+# Histogram of Hip Girth
+hist(df[,14], nclass = 10, col = 'orange', xlab = "Hip Girth", main = "Hip Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$hip_girth, main = "Normal Q-Q Plot Hip Girth") -> qqhip_girth
+qqline(df$hip_girth, col = 2, main = "Normal Q-Q Plot Hip Girth")
+cor(qqhip_girth$x,qqhip_girth$y)
+# Reject normality hypothesis
+mean(df$hip_girth)
+
+
+# Histogram of Thigh Girth
+hist(df[,15], nclass = 10, col = 'yellow', xlab = "Thigh Girth", main = "Thigh Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$thigh_girth, main = "Normal Q-Q Plot Thigh Girth") -> qqthigh_girth
+qqline(df$thigh_girth, col = 2, main = "Normal Q-Q Plot Thigh Girth")
+cor(qqthigh_girth$x,qqthigh_girth$y)
+# Reject normality hypothesis
+mean(df$thigh_girth)
+
+# Histogram of Bigcep Girth
+hist(df[,16], nclass = 10, col = 'green', xlab = "Bicep Girth", main = "Bicep Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$bicep_girth, main = "Normal Q-Q Plot Bicep Girth") -> qqbicep_girth
+qqline(df$bicep_girth, col = 2, main = "Normal Q-Q Plot Bicep Girth")
+cor(qqbicep_girth$x,qqbicep_girth$y)
+# Reject Normality hypothesis
+mean(df$bicep_girth)
+
+# Histogram of Forearm Girth
+hist(df[,17], nclass = 10, col = 'blue', xlab = "Forearm Girth", main = "Forearm Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$forearm_girth, main = "Normal Q-Q Plot Forearm Girth") -> qqforearm_girth
+qqline(df$forearm_girth, col = 2, main = "Normal Q-Q Plot Forearm Girth")
+cor(qqforearm_girth$x,qqforearm_girth$y)
+# Reject normality hypothesis
+mean(df$forearm_girth)
+
+
+# Histogram of Knee Girth
+hist(df[,18], nclass = 10, col = 'purple', xlab = "Knee Girth", main = "Knee Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$knee_girth, main = "Normal Q-Q Plot Knee Girth") -> qqknee_girth
+qqline(df$knee_girth, col = 2, main = "Normal Q-Q Plot Knee Girth")
+cor(qqknee_girth$x,qqknee_girth$y)
+# Reject normality hypothesis
+mean(df$knee_girth)
+
+
+# Histogram of Calf Maximum Girth
+hist(df[,19], nclass = 10, col = 'red', xlab = "Calf Maximum Girth", main = "Calf Maximum Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$calf_max, main = "Normal Q-Q Plot Calf Maximum Girth") -> qqcalf_max
+qqline(df$calf_max, col = 2, main = "Normal Q-Q Plot Calf Maximum Girth")
+cor(qqcalf_max$x,qqcalf_max$y)
+# Reject normality hypothesis
+mean(df$calf_max)
+
+
+# Histogram of Ankle Minimum Girth
+hist(df[,20], nclass = 10, col = 'orange', xlab = "Ankle Minimum Girth", main = "Ankle Minimum Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$ankle_min, main = "Normal Q-Q Plot Ankle Minimum Girth") -> qqankle_min
+qqline(df$ankle_min, col = 2, main = "Normal Q-Q Plot Ankle Minimum Girth")
+cor(qqankle_min$x,qqankle_min$y)
+# Reject normality hypothesis
+mean(df$ankle_min)
+
+
+# Histogram of Wrist Minimum Girth
+hist(df[,21], nclass = 10, col = 'yellow', xlab = "Wrist Minimum Girth", main = "Wrist Minimum Girth")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$wrist_min, main = "Normal Q-Q Plot Wrist Minimum Girth") -> qqwrist_min
+qqline(df$wrist_min, col = 2, main = "Normal Q-Q Plot Wrist Minimum Girth")
+cor(qqwrist_min$x,qqwrist_min$y)
+# Reject normality hypothesis
+mean(df$wrist_min)
+
+
+# Histogram of Age
+hist(df[,22], nclass = 10, col = 'green', xlab = "Age", main = "Age")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$age, main = "Normal Q-Q Plot Age") -> qqage
+qqline(df$age, col = 2, main = "Normal Q-Q Plot Age")
+cor(qqage$x,qqage$y)
+# Reject normality hypothesis
+mean(df$age)
+
+
+# Histogram of Weight
+hist(df[,23], nclass = 10, col = 'blue', xlab = "Weight", main = "Weight")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$weight, main = "Normal Q-Q Plot Weight") -> qqweight
+qqline(df$weight, col = 2, main = "Normal Q-Q Plot weight")
+cor(qqweight$x,qqweight$y)
+# Reject normality hypothesis
+mean(df$weight)
+
+
+# Histogram of Height
+hist(df[,24], nclass = 10, col = 'purple', xlab = "Height", main = "Height")
+# Marginal Normality based on Q-Q plots and Correlation Coefficient
+qqnorm(df$height, main = "Normal Q-Q Plot Height") -> qqheight
+qqline(df$height, col = 2, main = "Normal Q-Q Plot Height")
+cor(qqheight$x,qqheight$y)
+# Fail to reject normality hypothesis.
+mean(df$height)
+
+
+################################# PCA for Skeletal Measurements #########################################################
+# Create Skeletal Measurement Subset
+skeletal = c("biacromial", "biiliac", "bitrochanteric", "chest_depth", "chest_diameter", "elbow_diameter", "wrist_diameter", "knee_diameter",
+             "ankle_diameter")
+dfs = df[skeletal]
+dfs
+
+pca.dfs <- prcomp(dfs, scale=T)
+pca.dfs
+
+# Proportion of total variance explained by each component
+s <- var(pca.dfs$x)
+a = pvar<-round(diag(s)/sum(diag(s)), digits=6)
+cat("proportion of variance: ", pvar, fill=T)
+a
+screeplot(pca.dfs,type="lines", main = "Plot of Skeletal Measurements PC")
+
+
+############################ PCA for Girth Measurements ########################################################
+# Create Girth Measurement Subset
+girth = c("shoulder_girth", "chest_girth", "waist_girth", "navel_girth", "hip_girth", "thigh_girth", "bicep_girth", 
+             "forearm_girth", "knee_girth", "calf_max", "ankle_min", "wrist_min")
+dfg = df[girth]
+dfg
+
+pca.dfg <- prcomp(dfg, scale=T)
+pca.dfg
+
+# Proportion of total variance explained by each component
+s <- var(pca.dfg$x)
+a = pvar<-round(diag(s)/sum(diag(s)), digits=6)
+cat("proportion of variance: ", pvar, fill=T)
+a
+screeplot(pca.dfg,type="lines", main = "Plot of Girth Measurements PC")
+
+
+################################ Factor Analysis #####################################################
+# Determining the Number of Factors to Extract
+library(nFactors)
+ev = eigen(cor(df)) # get eigenvalues
+ap = parallel(subject=nrow(df), var=ncol(df),
+              rep=100, cent=.05)
+nS = nScree(x=ev$values, aparallel=ap$eigen$qevpea)
+plotnScree(nS)
+nS
+
+# Maximum likelihood factor analysis with varimax rotation
+
+fit = factanal(df, 3, rotation="varimax")
+print(fit, digits=2, cutoff=.3, sort=TRUE)
+# plot factor 1 by factor 2
+load = fit$loadings[,1:2]
+plot(load,type=) # set up plot
+text(load, labels=names(df), cex = .7)
