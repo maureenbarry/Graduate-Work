@@ -1,0 +1,131 @@
+# Import data
+df = read.csv("C:/Users/MB048710/Documents/KSU/STAT 730/Data/Final Project Data Clean1.csv")
+colnames(df) = c("male_dummy", "age_bin", "time_in_hospital", "num_lab_procedures", "num_procedures", "num_medications", "number_outpatient",
+                "number_emergency", "number_inpatient", "prim_diag_dummy", "number_diagnoses", "a1c8_dummy", "change_dummy", "dfm_med_dummy",
+                "readmit_dummy")
+head(df)
+write.csv(df, "C:/Users/MB048710/Documents/KSU/STAT 730/Data/df_write.csv")
+
+# Create Subset without readmission for PCA
+subset = c("male_dummy", "age_bin", "time_in_hospital", "num_lab_procedures", "num_procedures", "num_medications", "number_outpatient",
+           "number_emergency", "number_inpatient", "prim_diag_dummy", "number_diagnoses", "a1c8_dummy", "change_dummy", "dfm_med_dummy")
+dfs = df[subset]
+head(dfs)
+
+pca.dfs <- prcomp(dfs, scale=T)
+pca.dfs
+
+# Calculate Eigenvalues of PCs
+1.5989942^2 # PC1 2.556782
+1.3261328^2 # PC2 1.758628
+1.1816612^2 # PC3 1.396323
+1.1217233^2 # PC4 1.258263
+1.0135535^2 # PC5 1.027291
+0.9668863^2 # PC6 0.9348691
+
+# Retain PC1-PC5 due to eigenvalues > 1
+
+# Proportion of total variance explained by each component
+s <- var(pca.dfs$x)
+a = pvar<-round(diag(s)/sum(diag(s)), digits=6)
+cat("proportion of variance: ", pvar, fill=T)
+a
+screeplot(pca.dfs,type="lines", main = "Plot of Subset Measurements PC")
+
+df_pc = pca.dfs$x
+
+#Export the PCs
+write.csv(df_pc, "C:/Users/MB048710/Documents/KSU/STAT 730/Data/Final_PC.csv")
+
+# Import combined PCs from X and the Readmission data
+dfr = read.csv("C:/Users/MB048710/Documents/KSU/STAT 730/Data/Final_Regression.csv")
+colnames(dfr) = c("readmit", "pc1", "pc2", "pc3", "pc4", "pc5" )
+head(dfr)
+
+
+# Linear Regression
+library(MASS)
+# Predict probability of readmission through regression of PCs
+fit = lm(readmit ~ pc1 + pc2 + pc3 + pc4 + pc5, data=dfr)
+summary(fit)
+step_fit = stepAIC(fit, direction = "both",
+                   trace = FALSE)
+summary(step_fit)
+
+# Diagnostic Plots
+layout(matrix(c(1,2,3,4),2,2)) # optional 4 graphs/page 
+plot(fit)
+AIC(fit)
+
+
+#Without PCs lets test 
+full_model = lm(readmit_dummy ~., data=df)
+summary(full_model)
+
+
+
+# Stepwise regression model
+step_model = stepAIC(full_model, direction = "both",
+                     trace = FALSE)
+summary(step_model)
+
+
+# Multiple Logistic Regression
+model_null = glm(readmit ~ 1,
+                 data = dfr,
+                 family = binomial(link="logit")
+                 )
+
+log_model = glm(readmit ~ pc1 + pc2 + pc3 + pc4 + pc5, data=dfr, family = binomial(link="logit"))
+summary(log_model)
+
+step(model_null,
+     scope = list(upper=log_model),
+     direction = "both",
+     test = "Chisq",
+     data = dfr)
+
+final_log_model = glm(readmit ~ pc3 + pc1 + pc2, data = dfr, family = binomial(link="logit"),
+                      na.action(na.omit)
+                      )
+summary(final_log_model)
+
+library(car)
+Anova(final_log_model, type="II", test="Wald")
+
+library(rcompanion)
+nagelkerke(final_log_model)
+
+# Create data from with variables in final model and NAs omitted
+library(dplyr)
+Data.final = 
+  select(dfr,
+         readmit,
+         pc3,
+         pc1,
+         pc2)
+
+Data.final = na.omit(Data.final)
+
+# Define null models and compare to final model
+model.null = glm(readmit ~ 1,
+                 data=Data.final,
+                 family = binomial(link="logit")
+                 )
+anova(final_log_model,
+      model.null,
+      test="Chisq")
+
+plot(fitted(final_log_model),
+     rstandard(final_log_model))
+
+
+Data.final$predy = predict(final_log_model,
+                           type="response")
+
+#Plot
+plot(readmit ~ predy,
+     data = Data.final,
+     pch = 16,
+     xlab="Predicted probability of Readmission",
+     ylab="Actual Readmission")
